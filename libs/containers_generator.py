@@ -37,7 +37,7 @@ def grid_to_long_table(grid, variation_id):
             if grid[row][col] == 1:
                 # For each container, generate a random container name and append to the long table
                 long_table.append({
-                    'VariationID': variation_id,
+                    'Slot': variation_id,
                     'Row': row + 1,  # Row index starts from 1
                     'Col': col + 1,  # Col index starts from 1
                     'ContainerID': random_container_name()
