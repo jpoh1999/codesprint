@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>libs.containers_generator &mdash; CodeSprint Documentation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            CodeSprint Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">codesprint</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CodeSprint Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">libs.containers_generator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for libs.containers_generator</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<div class="viewcode-block" id="ContainerGenerator">
+<a class="viewcode-back" href="../../libs.html#libs.containers_generator.ContainerGenerator">[docs]</a>
+<span class="k">class</span> <span class="nc">ContainerGenerator</span><span class="p">()</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class to generate data for containers as input data for model    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Initialize some fixed strings to be used for Procedural Generation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container_type</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;HC&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">portmarks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ABCDE&quot;</span><span class="p">,</span> <span class="s2">&quot;FGHIJ&quot;</span><span class="p">,</span> <span class="s2">&quot;KLMNO&quot;</span><span class="p">,</span> <span class="s2">&quot;PQRST&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ContainerGenerator.generate_random_time">
+<a class="viewcode-back" href="../../libs.html#libs.containers_generator.ContainerGenerator.generate_random_time">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_random_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a random start and end time, ensuring start &lt; end with a distribution of 80% future and 20% past.&quot;&quot;&quot;</span>
+        <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">future_time</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># 80% chance for future, 20% for past</span>
+
+        <span class="k">if</span> <span class="n">future_time</span><span class="p">:</span>
+            <span class="c1"># Generate a random start time within the next 24 hours</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">current_time</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">hours</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">23</span><span class="p">),</span> <span class="n">minutes</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">59</span><span class="p">))</span>
+            <span class="c1"># Generate an end time that is at least 1 hour after the start time</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># End time between 1 to 5 hours after start time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Generate a random start time within the past 24 hours</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">hours</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">23</span><span class="p">),</span> <span class="n">minutes</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">59</span><span class="p">))</span>
+            <span class="c1"># Generate an end time that is at least 1 hour before the start time</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># End time between 1 to 5 hours before start time</span>
+
+        <span class="k">return</span> <span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">),</span> <span class="n">end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ContainerGenerator.random_container_name">
+<a class="viewcode-back" href="../../libs.html#libs.containers_generator.ContainerGenerator.random_container_name">[docs]</a>
+    <span class="k">def</span> <span class="nf">random_container_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Helper function to generate a random container name &quot;&quot;&quot;</span>
+        <span class="n">letters</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># Random letter</span>
+        <span class="n">digits</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>            <span class="c1"># Random digits</span>
+        
+        <span class="k">return</span> <span class="n">letters</span> <span class="o">+</span> <span class="n">digits</span></div>
+
+
+    <span class="c1"># Function to generate a variation of containers (between 0 and 60 containers)</span>
+<div class="viewcode-block" id="ContainerGenerator.generate_slot">
+<a class="viewcode-back" href="../../libs.html#libs.containers_generator.ContainerGenerator.generate_slot">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_slot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_levels</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Generate a random valid container layout </span>
+
+<span class="sd">            Args :</span>
+<span class="sd">                - num_rows [default : 6] (int) : num of rows for the container yard</span>
+<span class="sd">                - num_cols [default : 10] (int) : num of levels for the container yard</span>
+
+<span class="sd">            </span>
+<span class="sd">            Return :</span>
+<span class="sd">                grid (list) : the list of the container positions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Randomly choose the number of containers between 0 and 60</span>
+        <span class="n">num_containers</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_levels</span> <span class="o">*</span> <span class="n">num_rows</span><span class="p">)</span>
+    
+        <span class="c1"># Initialize empty grid with num_levels rows and num_rows columns</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_rows</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_levels</span><span class="p">)]</span>
+        
+        <span class="c1"># Place containers starting from the ground level in random columns</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">num_containers</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_rows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Random column, we fill this entire</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_levels</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Random row</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">grid</span><span class="p">[</span><span class="n">level</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            
+            <span class="n">num_containers</span> <span class="o">-=</span> <span class="n">level</span>
+            
+
+        <span class="k">return</span> <span class="n">grid</span></div>
+
+      
+<div class="viewcode-block" id="ContainerGenerator.grid_to_long_table">
+<a class="viewcode-back" href="../../libs.html#libs.containers_generator.ContainerGenerator.grid_to_long_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">grid_to_long_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">slot_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Transforms generated data into long format to stimulate the real world</span>
+
+<span class="sd">            Args :</span>
+<span class="sd">                - grid (list) : the list of the position of the containers</span>
+<span class="sd">                - slot_id (int) : the slot number</span>
+<span class="sd">            </span>
+<span class="sd">            Returns :</span>
+<span class="sd">                long_table (list[dict]) : list of container objects  </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="n">num_levels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="n">long_table</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_rows</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_levels</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">level</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># Generate random start and end times</span>
+                    <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_random_time</span><span class="p">()</span>
+                        
+                    <span class="c1"># Append the container info to the long table</span>
+                    <span class="n">long_table</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s1">&#39;Start_Time&#39;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span>
+                        <span class="s1">&#39;End_Time&#39;</span><span class="p">:</span> <span class="n">end_time</span><span class="p">,</span>
+                        <span class="s1">&#39;Weight&#39;</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">),</span>
+                        <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container_type</span><span class="p">),</span>
+                        <span class="s1">&#39;Mark&#39;</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">portmarks</span><span class="p">),</span>
+                        <span class="s1">&#39;Slot&#39;</span><span class="p">:</span> <span class="n">slot_id</span><span class="p">,</span>
+                        <span class="s1">&#39;Level&#39;</span><span class="p">:</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Row index starts from 1</span>
+                        <span class="s1">&#39;Row&#39;</span><span class="p">:</span> <span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>     <span class="c1"># Col index starts from 1</span>
+                        <span class="s1">&#39;ContainerID&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_container_name</span><span class="p">()</span>
+                    <span class="p">})</span>
+        
+        <span class="k">return</span> <span class="n">long_table</span></div>
+
+    
+
+<div class="viewcode-block" id="ContainerGenerator.generate">
+<a class="viewcode-back" href="../../libs.html#libs.containers_generator.ContainerGenerator.generate">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_slots</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">num_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_levels</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Main function to generate data for stimulation</span>
+
+<span class="sd">            Args :</span>
+<span class="sd">                - num_variations [default = 50000] (int) : the number of slots </span>
+<span class="sd">                - num_rows [default = 10] (int) : the number of rows in each slot</span>
+<span class="sd">                - num_cols [default = 6] (int) : the number of levels for each slot</span>
+
+<span class="sd">            Returns :</span>
+<span class="sd">                df (pd.Dataframe) : the long table for input</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_slots_data</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">slot_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_slots</span><span class="p">):</span>
+            <span class="c1"># Generate grid for each variation</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_slot</span><span class="p">(</span><span class="n">num_rows</span><span class="p">,</span> <span class="n">num_levels</span><span class="p">)</span>
+            
+            <span class="c1"># Convert the grid to long table format and append to the overall data</span>
+            <span class="n">slot_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_to_long_table</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">slot_id</span><span class="p">)</span>
+            <span class="n">all_slots_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">slot_data</span><span class="p">)</span>
+        
+        <span class="c1"># Convert the list of dictionaries into a pandas DataFrame</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_slots_data</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">df</span></div>
+</div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, James Poh, JingYu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,2 +1,5 @@
 pyyaml
 pandas
+sphinx
+sphinx-rtd-theme
+sphinx-simplepdf

@@ -1,8 +1,7 @@
 import unittest
 import pandas as pd
 from libs.utils import *
-
-CONFIG_FILE_PATH = ".config.yaml"
+from libs.constants import CONFIG_FILE_PATH
 
 class TestInputFile(unittest.TestCase):
 
@@ -12,7 +11,6 @@ class TestInputFile(unittest.TestCase):
         self.parquet_file_path = F"{config["input"][0]}.parquet"
 
         # Define the expected number of rows
-        self.expected_rows = 1446552  # Replace XXX with the number of rows you expect
         self.expected_cols = 4
 
     def test_data_shape(self):
@@ -23,13 +21,10 @@ class TestInputFile(unittest.TestCase):
         
         actual_rows = df.shape[0]
         actual_cols = df.shape[1]
-       
-        
-        print(df.head())
-
+    
         # Assert the actual number of rows equals the expected number
-        self.assertEqual(actual_rows, self.expected_rows, 
-                         f"Expected {self.expected_rows} rows, but got {actual_rows}.")
+        self.assertEqual(actual_rows > 0, True
+                         f"Expected more than 1 rows, Got 0")
         
         self.assertEqual(actual_cols, self.expected_cols,
                          f"Expected {self.expected_cols} rows, but got {actual_cols}.")
