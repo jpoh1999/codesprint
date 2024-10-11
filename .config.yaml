@@ -1,3 +1,8 @@
 input :
   - "input/containers"
   - "input/slot_profiles"
+  - "input/train"
+  - "input/test"
+  
+output : 
+  - "output/sol"
