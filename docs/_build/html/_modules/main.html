@@ -73,9 +73,11 @@
   <h1>Source code for main</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">libs.containers_generator</span> <span class="kn">import</span> <span class="n">ContainerGenerator</span>
 <span class="kn">from</span> <span class="nn">libs.slot_profile_reader</span> <span class="kn">import</span> <span class="n">SlotProfileReader</span>
+<span class="kn">from</span> <span class="nn">model.model</span> <span class="kn">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">libs.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">libs.constants</span> <span class="kn">import</span> <span class="n">CONFIG_FILE_PATH</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <div class="viewcode-block" id="generate_dirs">
 <a class="viewcode-back" href="../main.html#main.generate_dirs">[docs]</a>
@@ -91,18 +93,21 @@
 <a class="viewcode-back" href="../main.html#main.generate_containers">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_containers</span><span class="p">()</span> <span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate containers data &quot;&quot;&quot;</span>
+
     <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_file</span><span class="p">(</span><span class="n">CONFIG_FILE_PATH</span><span class="p">)</span>
     <span class="n">container_file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.parquet&quot;</span>
 
     <span class="c1"># Generate 50,000 variations and convert them to a long table</span>
     <span class="n">cg</span> <span class="o">=</span> <span class="n">ContainerGenerator</span><span class="p">()</span>
-    <span class="n">df_long_table</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">num_slots</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">num_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_levels</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">df_long_table</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">num_slots</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">num_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_levels</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
     
     <span class="c1"># Show the first few rows of the DataFrame</span>
     <span class="c1"># print(df_long_table.head())</span>
     
-    <span class="c1"># Optionally, save the DataFrame to a Parquet file</span>
-    <span class="n">df_long_table</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">container_file_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+    <span class="c1"># Save the DataFrame to a Parquet file</span>
+    <span class="n">df_long_table</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">container_file_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished generating containers data!&quot;</span><span class="p">)</span></div>
 
 
 
@@ -121,11 +126,51 @@
     <span class="n">cr</span><span class="o">.</span><span class="n">read_and_process</span><span class="p">(</span><span class="n">slot_profiles_dir</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="run_model">
+<a class="viewcode-back" href="../main.html#main.run_model">[docs]</a>
+<span class="k">def</span> <span class="nf">run_model</span><span class="p">()</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run model for solving a slot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+    
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_file</span><span class="p">(</span><span class="n">CONFIG_FILE_PATH</span><span class="p">)</span>
+    <span class="n">slot_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">scores_path</span><span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">scores_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scores_path</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+    <span class="c1"># Read the CSV file</span>
+    <span class="n">file_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">slot_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">)]</span>
+    <span class="n">scores_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">slot_path</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Convert the index to int</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># Convert the columns to int</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="n">slot_name</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">slot_name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+        
+        <span class="n">scores_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">slot_name</span><span class="p">,</span> <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span><span class="p">])</span>
+    
+    <span class="n">scores_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">scores_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">scores_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;slot&quot;</span><span class="p">,</span> <span class="s2">&quot;initial_score&quot;</span><span class="p">,</span> <span class="s2">&quot;final_score&quot;</span><span class="p">,</span> <span class="s2">&quot;reduction&quot;</span><span class="p">]</span>
+    <span class="n">scores_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">scores_file</span><span class="p">)</span></div>
+
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
     <span class="c1"># generate_containers()    </span>
-    <span class="n">preprocess_containers_data</span><span class="p">()</span>
-    
+    <span class="c1"># preprocess_containers_data()</span>
+    <span class="n">run_model</span><span class="p">()</span>
+
 
     
     

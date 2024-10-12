@@ -68,7 +68,7 @@ class ContainerGenerator() :
             for i in range(row) :
                 grid[level][i] = 1
             
-            num_containers -= level
+            num_containers -= row
             
 
         return grid

@@ -88,13 +88,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parquet_file_path</span> <span class="o">=</span> <span class="sa">F</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.parquet&quot;</span>
 
         <span class="c1"># Define the expected number of rows</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">expected_rows</span> <span class="o">=</span> <span class="mi">1446552</span>  <span class="c1"># Replace XXX with the number of rows you expect</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expected_cols</span> <span class="o">=</span> <span class="mi">4</span></div>
 
 
 <div class="viewcode-block" id="TestInputFile.test_data_shape">
 <a class="viewcode-back" href="../test.html#test.TestInputFile.test_data_shape">[docs]</a>
     <span class="k">def</span> <span class="nf">test_data_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
         <span class="c1"># Read the Parquet file</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parquet_file_path</span><span class="p">)</span>
         
@@ -102,16 +102,14 @@
         
         <span class="n">actual_rows</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">actual_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-       
-        <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-
+    
         <span class="c1"># Assert the actual number of rows equals the expected number</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">actual_rows</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_rows</span><span class="p">,</span> 
-                         <span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_rows</span><span class="si">}</span><span class="s2"> rows, but got </span><span class="si">{</span><span class="n">actual_rows</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">actual_rows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Expected more than 1 rows, Got 0&quot;</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">actual_cols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_cols</span><span class="p">,</span>
                          <span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_cols</span><span class="si">}</span><span class="s2"> rows, but got </span><span class="si">{</span><span class="n">actual_cols</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 </div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import shutil
 from libs.utils import *
 from libs.constants import CONFIG_FILE_PATH
 from datetime import datetime
@@ -27,7 +28,9 @@ class SlotProfileReader() :
         Each slot profile is saved as a CSV file named '{slotNumber}.csv'.
         """
         # Make directory for slot profiles if not already created
-        os.makedirs(output_dir, exist_ok=True)
+        
+        shutil.rmtree(output_dir) # i used shutil cos i lazy to check if its empty
+        os.makedirs(output_dir)
 
         # Load the configuration file
         config = load_config_file(CONFIG_FILE_PATH)
