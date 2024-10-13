@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/codesprint/static/css/main.b727e1e8.css",
+    "main.js": "/codesprint/static/js/main.4134059e.js",
+    "static/js/453.419a5d54.chunk.js": "/codesprint/static/js/453.419a5d54.chunk.js",
+    "static/media/background_landing.mp4": "/codesprint/static/media/background_landing.35912cbf5da2a812eac4.mp4",
+    "index.html": "/codesprint/index.html",
+    "main.b727e1e8.css.map": "/codesprint/static/css/main.b727e1e8.css.map",
+    "main.4134059e.js.map": "/codesprint/static/js/main.4134059e.js.map",
+    "453.419a5d54.chunk.js.map": "/codesprint/static/js/453.419a5d54.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b727e1e8.css",
+    "static/js/main.4134059e.js"
+  ]
+}
