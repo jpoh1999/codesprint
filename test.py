@@ -2,6 +2,7 @@ import unittest
 import pandas as pd
 from libs.utils import *
 from libs.constants import CONFIG_FILE_PATH
+from model.model import Model
 
 class TestInputFile(unittest.TestCase):
 
@@ -29,6 +30,35 @@ class TestInputFile(unittest.TestCase):
         self.assertEqual(actual_cols, self.expected_cols,
                          f"Expected {self.expected_cols} rows, but got {actual_cols}.")
 
+    def test_solution() :
+        """
+            Test the solution of one file
+        """
+        model = Model()
+    
+        config = load_config_file(CONFIG_FILE_PATH)
+
+        output_dir = config["output"][0]
+        scores_path= config["output"][1]
+        scores_file = f"{scores_path}.csv"
+
+        scores_list = []
+
+        df = pd.read_csv("input/slot_profiles/49.csv", header=0, index_col=0, na_filter=False)
+
+        # Convert the index to int
+        df.index = df.index.astype(int)
+
+        # Convert the columns to int
+        df.columns = df.columns.astype(int)
+
+        slot_name = "49"
+            
+        initial_score, final_score, reduction = model.solve(df, slot_name, output_dir)
+
+        scores_list.append([slot_name, initial_score, final_score, reduction])
+        scores_df = pd.DataFrame(scores_list, columns=["slot", "initial_score", "final_score", "reduction"])
+        scores_df.to_csv(scores_file)
 
 if __name__ == '__main__':
     unittest.main()

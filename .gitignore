@@ -50,6 +50,24 @@ dmypy.json
 # Environment variables file
 .env
 
-# Others
+# Ignore GCP service account secret key
+secret.json
+
+# Node.js dependencies
+node_modules/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Terraform files
+*.tfstate
+*.tfstate.backup
+.terraform/
+terraform.tfvars
+
+# Other files
 *.DS_Store
 Thumbs.db
+archives/
+*.mp4

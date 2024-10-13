@@ -4,11 +4,13 @@ input :
   - "input/train"
   - "input/test"
 output : 
-  - "output/sol"
-  - "output/scores"
+  - "output/greedy"
+  - "output/random"
+  - "output/greedy/scores"
+  - "output/random/scores"
 model :
-  time_overstow_factor : 100000
-  weight_overstow_factor : 70
+  time_overstow_factor : 10000
+  weight_overstow_factor : 100
   type_overstow_factor : 50
   mark_overstow_factor : 30
   empty_row_factor : 10000000000
