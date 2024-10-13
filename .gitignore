@@ -70,4 +70,4 @@ terraform.tfvars
 *.DS_Store
 Thumbs.db
 archives/
-*.mp4
+demo.mp4

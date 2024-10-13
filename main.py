@@ -17,7 +17,7 @@ def generate_containers() :
 
     # Generate 50,000 variations and convert them to a long table
     cg = ContainerGenerator()
-    df_long_table = cg.generate(num_slots=50, num_rows=10, num_levels=6)
+    df_long_table = cg.generate(num_slots=5, num_rows=10, num_levels=6)
     
     # Show the first few rows of the DataFrame
     # print(df_long_table.head())
@@ -157,7 +157,6 @@ def read_moves_file(file_path):
     return moves_list
 
 if __name__ == "__main__":
-
 
     # These two processes need to be done in order.
     generate_containers()    

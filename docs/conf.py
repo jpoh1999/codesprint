@@ -11,8 +11,8 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 
 project = 'CodeSprint Documentation'
-copyright = '2024, James Poh, JingYu'
-author = 'James Poh, JingYu'
+copyright = '2024, James Poh'
+author = 'James Poh, Jing Yu'
 release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------

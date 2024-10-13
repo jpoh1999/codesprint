@@ -50,9 +50,11 @@
 <li class="toctree-l2"><a class="reference internal" href="libs.html">libs package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">main module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#main.generate_containers"><code class="docutils literal notranslate"><span class="pre">generate_containers()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#main.generate_dirs"><code class="docutils literal notranslate"><span class="pre">generate_dirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#main.preprocess_containers_data"><code class="docutils literal notranslate"><span class="pre">preprocess_containers_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#main.run_model"><code class="docutils literal notranslate"><span class="pre">run_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.read_moves_file"><code class="docutils literal notranslate"><span class="pre">read_moves_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.run_greedy_model"><code class="docutils literal notranslate"><span class="pre">run_greedy_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.run_random_model"><code class="docutils literal notranslate"><span class="pre">run_random_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.test_solution"><code class="docutils literal notranslate"><span class="pre">test_solution()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
@@ -94,12 +96,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="main.generate_dirs">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">generate_dirs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#generate_dirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.generate_dirs" title="Link to this definition"></a></dt>
-<dd><p>Generate relevant dirs</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="main.preprocess_containers_data">
 <span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">preprocess_containers_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#preprocess_containers_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.preprocess_containers_data" title="Link to this definition"></a></dt>
 <dd><p>Preprocess the raw containers data from long format
@@ -107,9 +103,26 @@ into a pivot table for each slot</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="main.run_model">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">run_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#run_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.run_model" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="main.read_moves_file">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">read_moves_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#read_moves_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.read_moves_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.run_greedy_model">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">run_greedy_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#run_greedy_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.run_greedy_model" title="Link to this definition"></a></dt>
 <dd><p>Run model for solving a slot</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.run_random_model">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">run_random_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#run_random_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.run_random_model" title="Link to this definition"></a></dt>
+<dd><p>Run random model for solving a slot</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.test_solution">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">test_solution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#test_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.test_solution" title="Link to this definition"></a></dt>
+<dd><p>Test the solution of one solution file</p>
 </dd></dl>
 
 </section>
@@ -125,7 +138,7 @@ into a pivot table for each slot</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, James Poh, JingYu.</p>
+    <p>&#169; Copyright 2024, James Poh.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

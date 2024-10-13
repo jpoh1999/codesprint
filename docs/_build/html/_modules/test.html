@@ -75,6 +75,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">libs.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">libs.constants</span> <span class="kn">import</span> <span class="n">CONFIG_FILE_PATH</span>
+<span class="kn">from</span> <span class="nn">model.model</span> <span class="kn">import</span> <span class="n">Model</span>
 
 <div class="viewcode-block" id="TestInputFile">
 <a class="viewcode-back" href="../test.html#test.TestInputFile">[docs]</a>
@@ -108,8 +109,40 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">actual_cols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_cols</span><span class="p">,</span>
                          <span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_cols</span><span class="si">}</span><span class="s2"> rows, but got </span><span class="si">{</span><span class="n">actual_cols</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
-</div>
 
+
+<div class="viewcode-block" id="TestInputFile.test_solution">
+<a class="viewcode-back" href="../test.html#test.TestInputFile.test_solution">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_solution</span><span class="p">()</span> <span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Test the solution of one file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+    
+        <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_file</span><span class="p">(</span><span class="n">CONFIG_FILE_PATH</span><span class="p">)</span>
+
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">scores_path</span><span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">scores_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scores_path</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+        <span class="n">scores_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;input/slot_profiles/49.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Convert the index to int</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># Convert the columns to int</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="n">slot_name</span> <span class="o">=</span> <span class="s2">&quot;49&quot;</span>
+            
+        <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">slot_name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+        <span class="n">scores_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">slot_name</span><span class="p">,</span> <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span><span class="p">])</span>
+        <span class="n">scores_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scores_list</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;slot&quot;</span><span class="p">,</span> <span class="s2">&quot;initial_score&quot;</span><span class="p">,</span> <span class="s2">&quot;final_score&quot;</span><span class="p">,</span> <span class="s2">&quot;reduction&quot;</span><span class="p">])</span>
+        <span class="n">scores_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">scores_file</span><span class="p">)</span></div>
+</div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -123,7 +156,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, James Poh, JingYu.</p>
+    <p>&#169; Copyright 2024, James Poh.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
