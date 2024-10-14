@@ -3,10 +3,8 @@ from libs.slot_profile_reader import SlotProfileReader
 from model.model import Model
 from libs.utils import *
 from libs.constants import CONFIG_FILE_PATH
-import os
-import pandas as pd
-import multiprocessing
-import time  # For simulating time-consuming functions
+
+sys.setrecursionlimit(5000)
 
 
 def generate_containers() :
