@@ -1,0 +1,219 @@
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  background-color: #f8f9fa; /* Light gray background for a clean look */
+  min-height: 80vh; /* Maintain height for a compact layout */
+  padding: 40px; /* Increased padding for better spacing */
+  border-radius: 10px; /* Slightly rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  margin: 20px; /* Add margin around the container */
+  transition: background-color 0.3s; /* Smooth transition for background changes */
+}
+
+/* Optional: Dark mode styling */
+.dark-mode .container {
+  background-color: #343a40; /* Darker background for dark mode */
+  color: white; /* Text color adjustment */
+}
+
+.title {
+  color: #333; /* Light mode color */
+  margin-bottom: 20px;
+}
+
+.dark-mode .title {
+  color: #f8f9fa; /* Dark mode color */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button-start {
+  background-color: #007bff; /* Light mode */
+}
+
+.dark-mode .button-start {
+  background-color: #0056b3; /* Darker blue for dark mode */
+}
+
+.button-start:disabled {
+  background-color: #007bff88; /* Semi-transparent for disabled state */
+  cursor: not-allowed;
+}
+
+.dark-mode .button-start:disabled {
+  background-color: #0056b388; /* Darker semi-transparent for dark mode */
+}
+
+.button-reset {
+  background-color: #dc3545; /* Light mode */
+}
+
+.dark-mode .button-reset {
+  background-color: #c82333; /* Darker red for dark mode */
+}
+
+.button-reset:disabled {
+  background-color: #dc354588; /* Semi-transparent for disabled state */
+  cursor: not-allowed;
+}
+
+.dark-mode .button-reset:disabled {
+  background-color: #c8233388; /* Darker semi-transparent for dark mode */
+}
+
+/* Crane styling */
+.crane {
+  position: absolute;
+  width: 60px; /* Increased width of crane body */
+  height: 30px; /* Increased height of crane body */
+  background-color: #ff9800; /* Orange color for crane body */
+  border-radius: 5px; /* Rounded corners for crane body */
+  top: -50px; /* Initial position above containers */
+  left: 0; /* Start at the left */
+  z-index: 10; /* Ensure crane is above containers */
+}
+
+.dark-mode .crane {
+  background-color: #ffb74d; /* Lighter orange for dark mode */
+}
+
+.crane .rope {
+  position: absolute;
+  width: 2px; /* Adjust the width for visibility */
+  background-color: #333; /* Dark color for the rope */
+  transition: height 1s; /* Smooth transition for height */
+}
+
+.crane-row {
+  position: relative;
+  width: 100%;
+  height: 50px; /* Adjust as needed for crane height */
+  background-color: rgba(50, 50, 50, 0.8); /* Darker background for better visibility */
+  display: flex;
+  justify-content: center; /* Center crane in the row */
+  align-items: flex-end; /* Align crane to bottom */
+  margin-bottom: 20px; /* Space between crane row and layout */
+  border-radius: 8px; /* Optional: round corners */
+}
+
+
+/* Crane arm */
+.crane-arm {
+  position: absolute;
+  width: 10px; /* Increased width of crane arm */
+  height: 200px; /* Increased length of crane arm */
+  background-color: #3e2723; /* Dark brown for crane arm */
+  top: 0; /* Start at the top of the crane */
+  left: 50%; /* Center the arm horizontally */
+  transform: translateX(-50%); /* Adjust for width */
+}
+
+.dark-mode .crane-arm {
+  background-color: #4e342e; /* Darker brown for dark mode */
+}
+
+/* Hook */
+.hook {
+  position: absolute;
+  width: 12px; /* Increased width of the hook */
+  height: 20px; /* Increased height of the hook */
+  background-color: #000; /* Black hook */
+  border-radius: 50%; /* Circular hook */
+  top: 0px; /* Position below the arm */
+  left: 50%; /* Center the hook under the arm */
+  transform: translateX(-50%); /* Adjust for width */
+}
+
+.dark-mode .hook {
+  background-color: #ffffff; /* White hook for dark mode */
+}
+
+/* Layout */
+.layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+}
+
+/* Cell styling */
+.cell {
+  border: 1px solid #ccc;
+  width: calc(100vw / 12);
+  height: calc(80vh / 10);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  margin: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  color: #333;
+  font-size: 12px;
+  cursor: pointer; /* Add pointer cursor on hover */
+}
+
+.dark-mode .cell {
+  color: white;
+
+}
+
+.cell:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Highlighted cell styling */
+.cell.highlighted {
+  background-color: darkyellow; /* Highlighted background */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6); /* Add stronger shadow for emphasis */
+  border: 5px solid #ffcc00; /* Add a thicker border when highlighted */
+  transform: scale(1.1); /* Slightly enlarge the cell */
+}
+
+.dark-mode .cell.highlighted {
+  background-color: #ffc107; /* Lighter yellow for dark mode */
+  border-color: #ffeb3b;
+}
+
+.dark-mode .crane-row {
+  background-color: white;
+}
+
+/* Score bar */
+.current-score {
+  /* position: fixed; */
+  /* top: 20px; */
+  /* right: 20px; */
+  display: flex;
+  background-color: rgb(59, 90, 184); /* Make it super obvious */
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  /* z-index: 1000; Make sure it stays on top of other elements */
+}

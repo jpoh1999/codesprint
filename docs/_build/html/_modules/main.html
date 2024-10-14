@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main &mdash; CodeSprint Documentation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CodeSprint Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">codesprint</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CodeSprint Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for main</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">libs.containers_generator</span> <span class="kn">import</span> <span class="n">ContainerGenerator</span>
+<span class="kn">from</span> <span class="nn">libs.slot_profile_reader</span> <span class="kn">import</span> <span class="n">SlotProfileReader</span>
+<span class="kn">from</span> <span class="nn">model.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">libs.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">libs.constants</span> <span class="kn">import</span> <span class="n">CONFIG_FILE_PATH</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">time</span>  <span class="c1"># For simulating time-consuming functions</span>
+
+
+<div class="viewcode-block" id="generate_containers">
+<a class="viewcode-back" href="../main.html#main.generate_containers">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_containers</span><span class="p">()</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate containers data &quot;&quot;&quot;</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_file</span><span class="p">(</span><span class="n">CONFIG_FILE_PATH</span><span class="p">)</span>
+    <span class="n">container_file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.parquet&quot;</span>
+
+    <span class="c1"># Generate 50,000 variations and convert them to a long table</span>
+    <span class="n">cg</span> <span class="o">=</span> <span class="n">ContainerGenerator</span><span class="p">()</span>
+    <span class="n">df_long_table</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">num_slots</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">num_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_levels</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    
+    <span class="c1"># Show the first few rows of the DataFrame</span>
+    <span class="c1"># print(df_long_table.head())</span>
+    
+    <span class="c1"># Save the DataFrame to a Parquet file</span>
+    <span class="n">df_long_table</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">container_file_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished generating containers data!&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="preprocess_containers_data">
+<a class="viewcode-back" href="../main.html#main.preprocess_containers_data">[docs]</a>
+<span class="k">def</span> <span class="nf">preprocess_containers_data</span><span class="p">()</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Preprocess the raw containers data from long format</span>
+<span class="sd">        into a pivot table for each slot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cr</span> <span class="o">=</span> <span class="n">SlotProfileReader</span><span class="p">()</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_file</span><span class="p">(</span><span class="n">CONFIG_FILE_PATH</span><span class="p">)</span>
+    
+    <span class="n">slot_profiles_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">cr</span><span class="o">.</span><span class="n">read_and_process</span><span class="p">(</span><span class="n">slot_profiles_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="run_greedy_model">
+<a class="viewcode-back" href="../main.html#main.run_greedy_model">[docs]</a>
+<span class="k">def</span> <span class="nf">run_greedy_model</span><span class="p">()</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run model for solving a slot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">greedy_logger</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span><span class="s1">&#39;greedy_model_logger&#39;</span><span class="p">,</span> <span class="s1">&#39;greedy_model.log&#39;</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">greedy_logger</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting greedy model....&quot;</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_file</span><span class="p">(</span><span class="n">CONFIG_FILE_PATH</span><span class="p">)</span>
+    <span class="n">slot_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">greedy_out_dir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">greedy_scores_path</span><span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">scores_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">greedy_scores_path</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+    <span class="c1"># Read the CSV file</span>
+    <span class="n">file_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">slot_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">)]</span>
+    <span class="n">scores_list</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">slot_path</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Convert the index to int</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># Convert the columns to int</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="n">slot_name</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">slot_name</span><span class="p">,</span> <span class="n">greedy_out_dir</span><span class="p">)</span>
+        
+        <span class="n">scores_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">slot_name</span><span class="p">,</span> <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span><span class="p">])</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Greedy model finished.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="run_random_model">
+<a class="viewcode-back" href="../main.html#main.run_random_model">[docs]</a>
+<span class="k">def</span> <span class="nf">run_random_model</span><span class="p">()</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run random model for solving a slot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">random_logger</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span><span class="s1">&#39;random_model_logger&#39;</span><span class="p">,</span> <span class="s1">&#39;random_model.log&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting random model....&quot;</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">random_logger</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_file</span><span class="p">(</span><span class="n">CONFIG_FILE_PATH</span><span class="p">)</span>
+    <span class="n">slot_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">random_out_dir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">random_scores_path</span><span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="n">scores_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">random_scores_path</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+    <span class="c1"># Read the CSV file</span>
+    <span class="n">file_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">slot_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">)]</span>
+    <span class="n">scores_list</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">slot_path</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Convert the index to int</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># Convert the columns to int</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="n">slot_name</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">slot_name</span><span class="p">,</span> <span class="n">random_out_dir</span><span class="p">)</span>
+        
+        <span class="n">scores_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">slot_name</span><span class="p">,</span> <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span><span class="p">])</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Random model finished.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_solution">
+<a class="viewcode-back" href="../main.html#main.test_solution">[docs]</a>
+<span class="k">def</span> <span class="nf">test_solution</span><span class="p">()</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test the solution of one solution file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_file</span><span class="p">(</span><span class="n">CONFIG_FILE_PATH</span><span class="p">)</span>
+
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">scores_path</span><span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">scores_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scores_path</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+    <span class="n">scores_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;input/slot_profiles/49.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">na_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Convert the index to int</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># Convert the columns to int</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="n">slot_name</span> <span class="o">=</span> <span class="s2">&quot;43&quot;</span>
+        
+    <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">slot_name</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="n">scores_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">slot_name</span><span class="p">,</span> <span class="n">initial_score</span><span class="p">,</span> <span class="n">final_score</span><span class="p">,</span> <span class="n">reduction</span><span class="p">])</span>
+    <span class="n">scores_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scores_list</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;slot&quot;</span><span class="p">,</span> <span class="s2">&quot;initial_score&quot;</span><span class="p">,</span> <span class="s2">&quot;final_score&quot;</span><span class="p">,</span> <span class="s2">&quot;reduction&quot;</span><span class="p">])</span>
+    <span class="n">scores_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">scores_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_moves_file">
+<a class="viewcode-back" href="../main.html#main.read_moves_file">[docs]</a>
+<span class="k">def</span> <span class="nf">read_moves_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">moves_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="nb">next</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>  <span class="c1"># Skip the header line</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+            <span class="c1"># Strip the line of any extra spaces or newline characters, then split by commas</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="c1"># Convert each part to an integer and form a tuple</span>
+            <span class="n">move_tuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">parts</span><span class="p">))</span>
+            <span class="c1"># Append the tuple to the list</span>
+            <span class="n">moves_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move_tuple</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">moves_list</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># These two processes need to be done in order.</span>
+    <span class="n">generate_containers</span><span class="p">()</span>    
+    <span class="n">preprocess_containers_data</span><span class="p">()</span>
+    
+    <span class="c1"># These other two processes can be done in parallel execution.</span>
+    <span class="n">greedy_process</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">run_greedy_model</span><span class="p">)</span>
+    <span class="n">random_process</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">run_random_model</span><span class="p">)</span>
+    
+    <span class="c1"># Start both processes</span>
+    <span class="n">greedy_process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">random_process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="c1"># Wait for both processes to complete</span>
+    <span class="n">greedy_process</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="n">random_process</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished running models&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># test_solution()</span>
+
+
+    
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, James Poh.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
