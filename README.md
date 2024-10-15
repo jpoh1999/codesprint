@@ -42,16 +42,16 @@ To get started with this project, follow these steps to run the program locally:
    ```
 
 2. Install dependencies:
-   ```bash
-   python -r requirements.txt
-   cd client
-   npm install
-   ```
+  ```bash
+  python -r requirements.txt
+  cd client
+  npm install
+  ```
 
 3. Generate the solution from main program
-   ```bash
-   python main.py
-   ```
+  ```bash
+  python main.py
+  ```
 
 4. Set Up Google Cloud Data Lake from Terraform IAC
    ```bash
