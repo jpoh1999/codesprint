@@ -7,6 +7,9 @@ class SlotProfileReader() :
         Pivot the dataframe of long table into a valid slot yard slot layout
 
     """
+    def __init__(self) :
+        self.logger = configure_logger("Slot Profile Reader", "slot_profile_reader.log")
+
     def calculate_time_differences(self, row):
         current_time = datetime.now()
         

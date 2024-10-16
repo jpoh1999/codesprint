@@ -12,6 +12,7 @@ class ContainerGenerator() :
         self.weight = ["H", "M", "L"]
         self.container_type = ["G", "HC"]
         self.portmarks = ["ABCDE", "FGHIJ", "KLMNO", "PQRST"]
+        self.logger = configure_logger("Container_Generator", "container_generator.log")
 
     def generate_random_time(self):
         """Generate a random start and end time, ensuring start < end with a distribution of 80% future and 20% past."""
@@ -108,7 +109,7 @@ class ContainerGenerator() :
         return long_table
     
 
-    def generate(self, num_slots=50000, num_rows=10, num_levels=6):
+    def generate(self, slots=50000, rows=10, levels=6):
         """
             Main function to generate data for stimulation
 
@@ -122,9 +123,9 @@ class ContainerGenerator() :
         """
         all_slots_data = []
         
-        for slot_id in range(num_slots):
+        for slot_id in range(slots):
             # Generate grid for each variation
-            grid = self.generate_slot(num_rows, num_levels)
+            grid = self.generate_slot(rows, levels)
             
             # Convert the grid to long table format and append to the overall data
             slot_data = self.grid_to_long_table(grid, slot_id)
