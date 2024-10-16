@@ -17,6 +17,7 @@ It leverages sophisticated algorithms to enhance container organization and retr
 - [License](#license)
 - [Presentation](https://www.youtube.com/watch?v=W0w_6V6iFKo)
 - [Documentation](https://readthedocs.org/projects/codesprint-alibaba/)
+- [Appendices](#appendices)
 
 ## Features
 
@@ -40,7 +41,7 @@ To get started with this project, follow these steps to run the program locally:
    git clone https://github.com/yourusername/codesprint.git
    cd codesprint
    ```
-
+   
 2. Install dependencies:
    ```bash
    python -r requirements.txt
@@ -48,7 +49,7 @@ To get started with this project, follow these steps to run the program locally:
    npm install
    ```
 
-3. Generate the solution from main program
+3. Open up the GUI for the generator and solver:
    ```bash
    python main.py
    ```
@@ -96,3 +97,20 @@ Contributions are welcome! If you have suggestions for improvements or enhanceme
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## Appendices
+
+<p align="center">
+  <img width="800" alt="generator_solver" src="https://github.com/user-attachments/assets/71680313-e5f5-45e1-9d97-e2ec6e3980be">
+  <br>
+  <em>Fig 1. GUI of generator and solver</em>
+</p>
+
+<p align="center">
+  <img width="1679" alt="container_visualizer" src="https://github.com/user-attachments/assets/d1c9a929-2784-40bb-a166-c5247dff0f6a">
+  <br>
+  <em>Fig 2. Web Visualizer for solutions</em>
+</p>
+
+
+

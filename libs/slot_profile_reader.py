@@ -7,6 +7,9 @@ class SlotProfileReader() :
         Pivot the dataframe of long table into a valid slot yard slot layout
 
     """
+    def __init__(self) :
+        self.logger = configure_logger("Slot Profile Reader", "slot_profile_reader.log")
+
     def calculate_time_differences(self, row):
         current_time = datetime.now()
         
@@ -20,7 +23,7 @@ class SlotProfileReader() :
         
         return st, end
 
-    def read_and_process(self, output_dir: str):
+    def read_and_process(self, containers_file_path, output_dir: str):
         """
         Each slot profile is saved as a CSV file named '{slotNumber}.csv'.
         """
@@ -30,8 +33,8 @@ class SlotProfileReader() :
         os.makedirs(output_dir)
 
         # Load the configuration file
-        config = load_config_file(CONFIG_FILE_PATH)
-        containers_file_path = f"{config['input'][0]}.parquet"
+        # config = load_config_file(CONFIG_FILE_PATH)
+        # containers_file_path = f"{config['input'][0]}.parquet"
         
         # Read the Parquet file
         df = pd.read_parquet(containers_file_path)

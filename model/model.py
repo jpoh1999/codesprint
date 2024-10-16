@@ -377,7 +377,7 @@ class Model() :
         self.logger.info(f"Before shuffling scores, the score of slot {slot_name} is {initial_score}")
         # self.logger.debug(df)
 
-        moves, final_df = self.run_model(df, row_scores, sorted_rows)
+        moves, final_df = self.run_model(df, sorted_rows)
         pruned_moves = self.prune_moves(moves)
         
         self.write_sol_to_txt(slot_name, output_file, pruned_moves)
@@ -393,6 +393,7 @@ class Model() :
             self.logger.info(move)
         self.logger.info("------------------- END OF SHUFFLE ------------------")
         return initial_score, final_scores, reduction
+    
 
     def write_sol_to_txt(self, slot_name : int, output_file : str, moves : list):
         """
@@ -417,7 +418,7 @@ class Model() :
             for row in moves:
                 f.write(slot_name + ', ' + ', '.join(map(str, row)) + '\n')
 
-    def run_model(self, df : pd.DataFrame, row_scores : list, sorted_rows : SortedList):
+    def run_model(self, df : pd.DataFrame, sorted_rows : SortedList):
         """
             The greedy's iteration to solve the slot profile
             It try to resolve a slot profile by
