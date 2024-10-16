@@ -8,6 +8,7 @@ import time  # For simulating time-consuming functions
 import sys
 import random
 import string
+import itertools
 from datetime import datetime, timedelta
 
 def generate_dirs() :

@@ -349,29 +349,28 @@ class App:
 
         model_input_values = {k : v.get() for k,v in self.model_inputs.items()}
         
-        model = Model(logger=logger, random=random, **model_input_values)
+        # Load best model config from config file
+        model_configs = load_config_file(CONFIG_FILE_PATH)['model']
+        model_height_factor = [1, 100, 1000, 10000, 1000000, 10000000]
+
+        model = Model(logger=logger, 
+                      model_config=model_configs, 
+                      height_factor=model_height_factor,
+                      random=random, 
+                      **model_input_values)
+        
         scores_path = f"{self.output_path.get()}/scores/sol.csv"
         
         # Read the CSV file
         file_list = [f for f in os.listdir(self.input_path.get()) if f.endswith('.csv')]
-        scores_list = []
-        
-        for file in file_list:
-            file_path = os.path.join(self.input_path.get(), file)
-            df = pd.read_csv(file_path, header=0, index_col=0, na_filter=False)
+        input_path = self.input_path.get()
+        output_path = self.output_path.get()
 
-            # Convert the index to int
-            df.index = df.index.astype(int)
-
-            # Convert the columns to int
-            df.columns = df.columns.astype(int)
-
-            slot_name = file.split(".")[0]
-            
-            initial_score, final_score, reduction = model.solve(df, slot_name, self.output_path.get())
+        scores_df, total_reduction_scores = model.evaluate(scores_path, file_list, input_dir=input_path, out_dir=output_path)
         
-        scores_list.append([slot_name, initial_score, final_score, reduction])
-        
-        scores_df = pd.DataFrame(scores_list, columns=["slot", "initial_score", "final_score", "reduction"])
+        print(f"The final reduction score for all slots = {total_reduction_scores}")
         scores_df.to_csv(scores_path)
+        logger.info(f"Scores df saved to {scores_path}")
+
+    
         

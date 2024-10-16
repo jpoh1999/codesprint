@@ -9,21 +9,22 @@ class Model() :
         Smart Shuffling Model based on Deep Reinforcement Learning Approach 
     """
 
-    def __init__(self, logger, stop_factor : int = 10000, max_moves = 10, depth : int = 5, epochs : int = 1000, random : bool = False) :
+    def __init__(self, logger, model_config, height_factor, stop_factor : int = 10000, max_moves = 10, depth : int = 5, epochs : int = 1000, random : bool = False, penalty_per_move : int = 10000) :
         """
             Define all configuration variables
         """
+        self.model_configs = model_config
         self.logger = logger
-        self.model_configs = load_config_file(CONFIG_FILE_PATH)['model']
         self.weight_class = {"H": 3, "M": 2, "L": 1}
         self.opr_factor = 0.75
-        self.height_factor = [1, 100, 1000, 10000, 1000000, 10000000]
+        self.height_factor = height_factor
         self.stowage_factor = sum(self.model_configs.values()) - self.model_configs['empty_row_factor'] 
         self.early_stop_factor = stop_factor
         self.max_moves = max_moves
         self.depth = depth
         self.epochs = epochs
         self.random = random
+        self.penalty_per_move = penalty_per_move
 
 
     def get_stowage_score_containers(self, top_container, bot_container) :
@@ -346,7 +347,7 @@ class Model() :
         return pruned_moves
 
 
-    def solve(self, df : pd.DataFrame, slot_name : int, output_dir : str) :
+    def solve(self, slot_profile : pd.DataFrame, slot_name : int, output_dir : str) :
         """
             The main function for the model run
 
@@ -357,19 +358,19 @@ class Model() :
 
         os.makedirs(output_dir, exist_ok=True)
         output_file = f"{output_dir}/{slot_name}.txt"
-        n = df.shape[1]
+        n = slot_profile.shape[1]
         row_scores = [0] * (n + 1) # dictionary for 3 to n containers shuffling
         sorted_rows = SortedList(key=lambda row: row_scores[row])
 
         initial_score = 0
         
-        if (self.get_operating_factor(df) > self.opr_factor * df.shape[0] * df.shape[1]) :
+        if (self.get_operating_factor(slot_profile) > self.opr_factor * slot_profile.shape[0] * slot_profile.shape[1]) :
             self.logger.info("No point shuffling slot... Operating capacity > 75% of the slot")
             return
 
-        for row in df.columns: # from 1 to 10
+        for row in slot_profile.columns: # from 1 to 10
             
-            score = self.calculate_stowage_score_row(df, row)
+            score = self.calculate_stowage_score_row(slot_profile, row)
             row_scores[row] = score
             initial_score += score
             sorted_rows.add(row)
@@ -377,7 +378,7 @@ class Model() :
         self.logger.info(f"Before shuffling scores, the score of slot {slot_name} is {initial_score}")
         # self.logger.debug(df)
 
-        moves, final_df = self.run_model(df, sorted_rows)
+        moves, final_df = self.run_model(slot_profile, sorted_rows)
         pruned_moves = self.prune_moves(moves)
         
         self.write_sol_to_txt(slot_name, output_file, pruned_moves)
@@ -469,6 +470,7 @@ class Model() :
             # Perform backtracking to optimize the selected rows
             curr_score, curr_moves, curr_state = self.backtrack(final_df, left, aux, right, 10)
             self.logger.info(f"The current score at step {epoch} = {curr_score}")
+            curr_score += self.penalty_per_move * len(curr_moves)
 
             # Stopping conditions for greedy and random :
             if (not self.random and curr_score >= best_score) :
@@ -490,6 +492,121 @@ class Model() :
                     empty_rows.append(row)
 
         return all_moves, final_df
+
+    def evaluate(self, file_list : list, input_dir : str, out_dir : str):
+        scores_list = []
+        total_reduction = 0
+        
+        os.makedirs(out_dir, exist_ok = True)
+        
+        for file in file_list:
+            file_path = os.path.join(input_dir, file)
+            df = pd.read_csv(file_path, header=0, index_col=0, na_filter=False)
+
+            # Convert the index to int
+            df.index = df.index.astype(int)
+
+            # Convert the columns to int
+            df.columns = df.columns.astype(int)
+
+            slot_name = file.split(".")[0]
+            
+            initial_score, final_score, reduction = self.solve(df, slot_name, out_dir)
+
+            total_reduction += reduction
+
+        scores_list.append([slot_name, initial_score, final_score, reduction])
+        
+        scores_df = pd.DataFrame(scores_list, columns=["slot", "initial_score", "final_score", "reduction"])
+        
+        return scores_df, total_reduction
+
+    def tune_model(self, file_list : list, in_dir : str, out_dir : str) :
+        """
+            Do a grid search to find the best hyper parameters for BT model
+
+            We will use stowage score reduction as an evaluation score 
+
+            Hyper-parameters :
+                stowage_scores : [][] 2d
+                height_factors : [][] 2d
+                weight_factors : [][] 2d
+                penalty_per_move : [] 1d
+                epochs : [] 1d
+                max_moves : [] 1d
+                depth : [] 1d
+        """
+        self.logger.info("STARTING TUNING...")
+        best_score = float("inf")
+        time_grid = [100,1000,10000,100000]
+        weight_grid = [1, 50, 200, 500, 1000]
+        ctype_grid = [1, 50, 200, 500, 1000]
+        mark_grid = [1, 50, 200, 500, 1000]
+        empty_row_grid = [1000, 5000, 10000, 200000, 10000000]
+        depth_grid = [1, 3, 5, 7, 10]
+        epochs_grid = [1, 30, 100, 500, 1000]
+        max_moves_grid = [1, 3, 5, 10, 15]
+        penalty_per_moves_grid = [1, 50, 300, 500, 1000]
+        stop_grid = [100,10000,100000,1000000,10000000]
+
+        height_grid = [[1, 100, 1000, 10000, 1000000, 10000000],
+                  [1, 10, 100, 200, 500, 10000],
+                  [1, 200, 300, 5000, 10000, 1000000]]
+    
+
+        param_combinations = list(itertools.product(depth_grid, 
+                                                    epochs_grid, 
+                                                    time_grid, 
+                                                    weight_grid, 
+                                                    ctype_grid, 
+                                                    mark_grid, 
+                                                    empty_row_grid, 
+                                                    max_moves_grid, 
+                                                    penalty_per_moves_grid, 
+                                                    height_grid, 
+                                                    stop_grid))
+
+        for i,comb in enumerate(param_combinations) :
+            depth, epochs, time, weight, ctype, mark, empty_row, max_moves, penalty_per_moves, height, stop = comb
+            model_config = {
+                "time_overstow_factor" : time,
+                "weight_overstow_factor" : weight,
+                "type_overstow_factor" : ctype,
+                "mark_overstow_factor" : mark,
+                "empty_row_factor" : empty_row
+            }
+            model_name = f"Model_{i}"
+            log_file_dir = "model/tune"
+
+            out_path = f"{out_dir}/{model_name}"
+
+            logger = configure_logger(model_name, f"{log_file_dir}/{model_name}.log")
+
+            print(model_config)
+            model = Model(logger, 
+                          model_config=model_config, 
+                          height_factor=height,
+                          stop_factor=stop,
+                          max_moves=max_moves,
+                          depth=depth,
+                          epochs=epochs,
+                          penalty_per_move=penalty_per_moves
+                          )
+            
+            _, curr_score = model.evaluate(file_list, in_dir, out_path)
+
+            self.logger.info(f"Current score for {model_name} : {curr_score}...")
+            if curr_score < best_score :
+                best_score = curr_score
+                self.model_configs = model.model_configs
+                self.update_config() # Update the parameters of the config file with the best score
+            
+            self.logger.info(f"END OF FINE TUNING ... BEST SCORE : {best_score}")
+
+    def update_config(self) :
+        # Write the updated config back to the YAML file
+        with open(CONFIG_FILE_PATH, 'w') as file:
+            yaml.dump(self.model_configs, file, default_flow_style=False)
 
     def get_random_trios(self, sorted_rows, start, end, count=2):
         """
