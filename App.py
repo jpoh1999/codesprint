@@ -38,7 +38,7 @@ class App:
         self.model_inputs = {}
 
         self.model_inputs =  {
-            "stop_factor": ctk.IntVar(value=10000),
+            "score_threshold": ctk.IntVar(value=10000),
             "max_moves": ctk.IntVar(value=10),
             "depth": ctk.IntVar(value=5),
             "epochs": ctk.IntVar(value=1000)

@@ -9,7 +9,7 @@ class Model() :
         Smart Shuffling Model based on Deep Reinforcement Learning Approach 
     """
 
-    def __init__(self, logger, model_config, height_factor, stop_factor : int = 10000, max_moves = 10, depth : int = 5, epochs : int = 1000, random : bool = False, penalty_per_move : int = 10000) :
+    def __init__(self, logger, model_config, height_factor, score_threshold : int = 10000, max_moves = 10, depth : int = 5, epochs : int = 1000, random : bool = False, penalty_per_move : int = 10000) :
         """
             Define all configuration variables
         """
@@ -19,12 +19,13 @@ class Model() :
         self.opr_factor = 0.75
         self.height_factor = height_factor
         self.stowage_factor = sum(self.model_configs.values()) - self.model_configs['empty_row_factor'] 
-        self.early_stop_factor = stop_factor
+        self.score_threshold = score_threshold
         self.max_moves = max_moves
         self.depth = depth
         self.epochs = epochs
         self.random = random
         self.penalty_per_move = penalty_per_move
+        self.early_stopping = 100
 
 
     def get_stowage_score_containers(self, top_container, bot_container) :
@@ -476,7 +477,7 @@ class Model() :
             if (not self.random and curr_score >= best_score) :
                 break
             
-            elif self.random and curr_score + self.early_stop_factor > best_score: # equivalent to improvement score < self.stop_factor
+            elif self.random and curr_score + self.score_threshold > best_score: # equivalent to improvement score < self.stop_factor
                 break
             
             else :
@@ -496,8 +497,7 @@ class Model() :
     def evaluate(self, file_list : list, input_dir : str, out_dir : str):
         scores_list = []
         total_reduction = 0
-        
-        os.makedirs(out_dir, exist_ok = True)
+
         
         for file in file_list:
             file_path = os.path.join(input_dir, file)
@@ -537,6 +537,8 @@ class Model() :
                 depth : [] 1d
         """
         self.logger.info("STARTING TUNING...")
+
+        # Setting the look_up grids
         best_score = float("inf")
         time_grid = [100,1000,10000,100000]
         weight_grid = [1, 50, 200, 500, 1000]
@@ -566,6 +568,8 @@ class Model() :
                                                     height_grid, 
                                                     stop_grid))
 
+        shutil.rmtree(out_dir)
+        # For every combinations : 
         for i,comb in enumerate(param_combinations) :
             depth, epochs, time, weight, ctype, mark, empty_row, max_moves, penalty_per_moves, height, stop = comb
             model_config = {
@@ -579,6 +583,7 @@ class Model() :
             log_file_dir = "model/tune"
 
             out_path = f"{out_dir}/{model_name}"
+            os.makedirs(out_path, exist_ok=True)
 
             logger = configure_logger(model_name, f"{log_file_dir}/{model_name}.log")
 
@@ -586,7 +591,7 @@ class Model() :
             model = Model(logger, 
                           model_config=model_config, 
                           height_factor=height,
-                          stop_factor=stop,
+                          score_threshold=stop,
                           max_moves=max_moves,
                           depth=depth,
                           epochs=epochs,
@@ -598,13 +603,16 @@ class Model() :
             self.logger.info(f"Current score for {model_name} : {curr_score}...")
             if curr_score < best_score :
                 best_score = curr_score
-                self.model_configs = model.model_configs
+                
                 self.update_config() # Update the parameters of the config file with the best score
             
             self.logger.info(f"END OF FINE TUNING ... BEST SCORE : {best_score}")
 
     def update_config(self) :
         # Write the updated config back to the YAML file
+        config_file = load_config_file(CONFIG_FILE_PATH)
+        config_file.update(self.model_configs)
+
         with open(CONFIG_FILE_PATH, 'w') as file:
             yaml.dump(self.model_configs, file, default_flow_style=False)
 
